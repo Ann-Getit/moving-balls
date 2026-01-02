@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table</title>
+
+    <style>
+        body {
+            background-color: rgb(20, 35, 35);
+            color: white;
+            text-align: center;
+        }
+
+        h1 {
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        }
+
+        canvas {
+            background-color: rgb(20, 144, 20);
+        }
+    </style>
+
+    <script>
+
+        
+
+
+        var bal1 = {
+            kleur: "red",
+            y: 50,
+            x: 259,
+            speedX: -0.5,
+            speedY: +2
+        };
+
+        var bal2 = {
+            kleur: "blue",
+            y: 50,
+            x: 400,
+            speedX: -0.1,
+            speedY: +2
+        };
+
+        var bal3 = {
+            kleur: "purple",
+            y: 100,
+            x: 100,
+            speedX: 0.5,
+            speedY: +2
+        };
+
+            var bal4 = {
+            kleur: "orange",
+            y: 200,
+            x: 50,
+            speedX: -0.5,
+            speedY: +1
+        };
+
+            var bal5 = {
+            kleur: "black",
+            y: 134,
+            x: 324,
+           // radius: 20,
+            speedX: -0.5,
+            speedY: +2
+        };
+
+            var bal6 = {
+            kleur: "white",
+            y: 50,
+            x: 100,
+            speedX: -0.5,
+            speedY: -1
+        };
+
+
+
+
+
+        
+
+        var ballen = [bal1, bal2, bal3, bal4, bal5, bal6];
+
+        const radius = 10;
+
+       function drawCanvas()
+       {
+
+
+           var canvas = document.getElementById("canvas");
+           var context = canvas.getContext("2d");
+
+           context.clearRect(0, 0,canvas.width, canvas.height);
+      
+
+        for(var b of ballen)
+        {
+            context.beginPath();
+            context.arc(b.x, b.y, radius, 0, Math.PI * 2);
+            context.fillStyle = b.kleur;
+            context.fill();
+
+            //de ballen bewegen
+          b.x += b.speedX;
+          b.y += b.speedY;
+
+          b.speedX *= 0.999; //0.9999 inplaats van 0.999 de ballen blijven niet vast aan de randen zitten MAAR de ballen stoppen dan niet (als je dat wil prima)
+          b.speedY *= 0.999;
+
+         // Bounce of the walls
+          if (b.y <= radius) {
+          b.y = radius;
+          b.speedY = Math.abs(b.speedY);
+          }
+
+          if (b.y >= canvas.height - radius) {
+           b.y = canvas.height - radius;
+          b.speedY = -Math.abs(b.speedY);
+          }
+
+          if (b.x <= radius) {
+          b.x = radius;
+          b.speedX = Math.abs(b.speedX); 
+          }
+
+          if (b.x >= canvas.width - radius) {
+          b.x = canvas.width - radius;
+          b.speedX = -Math.abs(b.speedX);
+    }
+    // bouncing off each other (after bouncing off walls)
+    for (let i = 0; i < ballen.length; i++) {
+    for (let j = i + 1; j < ballen.length; j++) {
+      checkBounce(ballen[i], ballen[j]);
+
+      if (Math.abs(b.speedX) < 0.05) b.speedX = 0; //snelheid van de ballen moeten 0.05 of hoger zijn. om bal te stopen na bouncen
+    if (Math.abs(b.speedY) < 0.05) b.speedY = 0;
+    }
+  }
+
+//0.5 zijn weggehaald
+  if (b.x <= radius || b.x >= canvas.width + radius||
+    b.y <= radius || b.y >= canvas.height - radius) {
+    console.log(`Bijna tegen rand: x=${b.x.toFixed(2)}, y=${b.y.toFixed(2)}, speedX=${b.speedX.toFixed(4)}, speedY=${b.speedY.toFixed(4)}`);
+}
+}
+       }
+          
+
+
+
+      function moveB()
+      {
+      for (var b of ballen)
+      {
+        b.speedX = -1;
+        b.speedY = +3;
+      }
+      }
+
+      /////BOUNCE DE BALLS of of eachother
+
+      function checkBounce(ball1, ball2)//twee nieuwe variabelen 
+      {
+    const dx = ball2.x - ball1.x;
+    const dy = ball2.y - ball1.y;
+    const distance = Math.hypot(dx,dy);
+    const minDist = radius * 2;
+
+  if (distance < minDist) {
+    // Reverse velocities (simple bounce. met +1 bouncen ze niet ze raken elkaar alleen aan)
+    ball1.speedX *= -1;
+    ball1.speedY *= -1;
+    ball2.speedX *= -1;
+    ball2.speedY *= -1;
+
+    // Calculate overlap amount
+    const overlap = minDist - distance;
+
+    // Normalize direction vector between balls
+    const nx = dx / distance;
+    const ny = dy / distance;
+
+    // Push balls apart so they no longer overlap
+    ball1.x -= nx * overlap / 2;
+    ball1.y -= ny * overlap / 2;
+    ball2.x += nx * overlap / 2;
+    ball2.y += ny * overlap / 2;
+  }
+}
+
+var color = ['deeppink', '#00bfff', 'yellow', '#b8860b', '#604522', 'pink', 'turquoise', '#8fbc8f', '#778899', '#008080'];
+let aantalB = 0;
+const maxNieuweBallen = 10;
+function addBalls()
+
+{
+    if (aantalB >= maxNieuweBallen) {
+        document.getElementById('addBtn').disabled = true;
+        return;
+    }
+    for(var index = 0; index < 1; index++)
+{
+        var newBall = {
+         kleur: color[aantalB],//[Math.floor(Math.random() * color.length)],
+         y: Math.random() * 250,
+         x: Math.random() * 500,
+         speedX: Math.random() * 4 - 2,
+         speedY: Math.random() * 4 - 2
+};
+        ballen.push(newBall);
+        aantalB++;
+}
+   
+        if (aantalB >= maxNieuweBallen) {
+         document.getElementById('addBtn').disabled = true;
+        }
+          //ballen.push(newBall);
+
+      }
+
+
+    
+
+    
+
+    </script>
+
+</head>
+<body onload="setInterval(drawCanvas, 10)">
+    <h1>
+        Bouncing balls
+    </h1>
+    <canvas id="canvas" width="500" height="250" style="border:5px solid #d3bf28;"></canvas>
+    <br>
+    <br>
+
+    <button onclick="moveB()">MoveBalls</button>
+    <button id="addBtn" onclick="addBalls()">add Balls</button>
+</body>
+</html>
