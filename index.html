@@ -150,18 +150,18 @@
     for (let j = i + 1; j < ballen.length; j++) {
       checkBounce(ballen[i], ballen[j]);
 
-      if (Math.abs(b.speedX) < 0.05) b.speedX = 0; //snelheid van de ballen moeten 0.05 of hoger zijn. om bal te stopen na bouncen
+    if (Math.abs(b.speedX) < 0.05) b.speedX = 0; 
     if (Math.abs(b.speedY) < 0.05) b.speedY = 0;
-    }
+    }//snelheid van de ballen moeten 0.05 of lager zijn. om bal volledig te stopen na bouncen
   }
 
-//0.5 zijn weggehaald
-  if (b.x <= radius || b.x >= canvas.width + radius||
+//this conditional statement is only for debugging
+  if (b.x <= radius || b.x >= canvas.width - radius||
     b.y <= radius || b.y >= canvas.height - radius) {
     console.log(`Bijna tegen rand: x=${b.x.toFixed(2)}, y=${b.y.toFixed(2)}, speedX=${b.speedX.toFixed(4)}, speedY=${b.speedY.toFixed(4)}`);
 }
-}
-       }
+}//einde for loop
+       }//einde drawCanvas function
           
 
 
@@ -173,11 +173,12 @@
         b.speedX = -1;
         b.speedY = +3;
       }
-      }
+      }/*The moveB() function is triggered by a button click.
+When called, it sets the horizontal and vertical speed of each ball, effectively starting or adjusting their movement.*/
 
       /////BOUNCE DE BALLS of of eachother
 
-      function checkBounce(ball1, ball2)//twee nieuwe variabelen 
+function checkBounce(ball1, ball2)//twee nieuwe variabelen 
       {
     const dx = ball2.x - ball1.x;
     const dy = ball2.y - ball1.y;
@@ -209,42 +210,30 @@
 var color = ['deeppink', '#00bfff', 'yellow', '#b8860b', '#604522', 'pink', 'turquoise', '#8fbc8f', '#778899', '#008080'];
 let aantalB = 0;
 const maxNieuweBallen = 10;
-function addBalls()
 
-{
-    if (aantalB >= maxNieuweBallen) {
-        document.getElementById('addBtn').disabled = true;
-        return;
-    }
-    for(var index = 0; index < 1; index++)
-{
-        var newBall = {
-         kleur: color[aantalB],//[Math.floor(Math.random() * color.length)],
-         y: Math.random() * 250,
-         x: Math.random() * 500,
-         speedX: Math.random() * 4 - 2,
-         speedY: Math.random() * 4 - 2
-};
-        ballen.push(newBall);
-        aantalB++;
+
+function addBalls() {
+  if (aantalB < maxNieuweBallen) {
+    var newBall = {
+        kleur: color[aantalB],//[Math.floor(Math.random() * color.length)],
+        x: Math.random() * 500,
+        y: Math.random() * 250,
+        speedX: Math.random() * 4 - 2,
+        speedY: Math.random() * 4 - 2
+    };
+
+    ballen.push(newBall);
+    aantalB++;
+  }
+
+ if (aantalB >= maxNieuweBallen) {
+ document.getElementById('addBtn').disabled = true;
 }
-   
-        if (aantalB >= maxNieuweBallen) {
-         document.getElementById('addBtn').disabled = true;
-        }
-          //ballen.push(newBall);
-
       }
-
-
-    
-
-    
-
     </script>
 
 </head>
-<body onload="setInterval(drawCanvas, 10)">
+<body onload="setInterval(drawCanvas, 10)"> <!--dit werkt na de canvas tag-->
     <h1>
         Bouncing balls
     </h1>
@@ -254,5 +243,7 @@ function addBalls()
 
     <button onclick="moveB()">MoveBalls</button>
     <button id="addBtn" onclick="addBalls()">add Balls</button>
+
+
 </body>
 </html>
